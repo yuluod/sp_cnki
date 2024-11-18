@@ -26,7 +26,7 @@ jobs:
         mkdir -p dist
         
         # 复制必要文件到发布目录
-        cp manifest.json content.js background.js icon48.png icon128.png dist/
+        cp manifest.json content.js background.js icon48.png icon128.png LICENSE dist/
         
         # 创建zip包
         cd dist
