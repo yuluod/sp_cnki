@@ -3,7 +3,7 @@ name: Build Chrome Extension
 on:
   push:
     tags:
-      - 'v*' # 当推送版本标签时触发
+      - 'v*'
 
 permissions:
   contents: write
@@ -19,40 +19,35 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: '20'
-        
-    - name: Install Chrome
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y chromium-browser
-        
+
     - name: Create extension package
-      env:
-        EXTENSION_KEY: ${{ secrets.EXTENSION_KEY }}
       run: |
-        # 创建临时key文件
-        echo "$EXTENSION_KEY" > key.pem
+        # 创建发布目录
+        mkdir -p dist
         
-        # 首先创建zip包
-        zip -r extension.zip . -x "*.git*" -x "*.github*" -x "*.zip" -x "*.crx" -x "key.pem"
+        # 复制必要文件到发布目录
+        cp manifest.json content.js background.js icon48.png icon128.png dist/
         
-        # 使用Chrome打包扩展
-        chromium-browser --pack-extension=./ --pack-extension-key=key.pem
-        
-        # 删除临时key文件
-        rm key.pem
+        # 创建zip包
+        cd dist
+        zip -r ../sp_cnki.zip *
+        cd ..
         
     - name: Create Release and Upload Asset
       uses: softprops/action-gh-release@v1
       with:
-        files: |
-          *.crx
-          extension.zip
+        files: sp_cnki.zip
         name: Release ${{ github.ref_name }}
         body: |
           Chrome Extension Release ${{ github.ref_name }}
           
-          This release contains:
-          - sp_cnki.crx: Signed Chrome extension package
-          - extension.zip: Source files for manual installation
+          This release contains the Chrome extension package ready for installation.
+          
+          Installation Steps:
+          1. Download sp_cnki.zip
+          2. Extract the zip file
+          3. Open Chrome and go to chrome://extensions/
+          4. Enable "Developer mode"
+          5. Click "Load unpacked" and select the extracted folder
         draft: false
         prerelease: false
