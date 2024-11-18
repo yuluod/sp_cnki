@@ -43,6 +43,33 @@
 ]
 ```
 
+## 开发相关
+
+### 自动构建
+
+本项目使用GitHub Actions进行自动构建。当推送新的版本标签时，会自动触发构建流程：
+
+1. 打包Chrome扩展
+2. 创建GitHub Release
+3. 上传构建好的扩展包
+
+### 发布新版本
+
+```bash
+# 1. 更新版本号（在manifest.json中）
+# 2. 提交更改
+git add .
+git commit -m "Update to version x.x.x"
+
+# 3. 创建新的版本标签
+git tag vx.x.x
+
+# 4. 推送到GitHub
+git push origin main --tags
+```
+
+构建完成后，可以在GitHub Releases页面下载最新版本的扩展包。
+
 ## 注意事项
 
 - 下载过程中请勿关闭或刷新页面

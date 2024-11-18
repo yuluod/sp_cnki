@@ -1,0 +1,16 @@
+# 构建输出
+node_modules/
+dist/
+*.zip
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# IDE配置
+.idea/
+.vscode/
+
+# 扩展相关
+.web-extension-id
+web-ext-artifacts/
