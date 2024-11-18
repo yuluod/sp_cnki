@@ -20,18 +20,39 @@ jobs:
       with:
         node-version: '20'
         
-    - name: Create extension zip
+    - name: Install Chrome
       run: |
-        zip -r sp_cnki.zip . -x "*.git*" -x "*.github*" -x "*.zip"
+        sudo apt-get update
+        sudo apt-get install -y chromium-browser
+        
+    - name: Create extension package
+      env:
+        EXTENSION_KEY: ${{ secrets.EXTENSION_KEY }}
+      run: |
+        # 创建临时key文件
+        echo "$EXTENSION_KEY" > key.pem
+        
+        # 首先创建zip包
+        zip -r extension.zip . -x "*.git*" -x "*.github*" -x "*.zip" -x "*.crx" -x "key.pem"
+        
+        # 使用Chrome打包扩展
+        chromium-browser --pack-extension=./ --pack-extension-key=key.pem
+        
+        # 删除临时key文件
+        rm key.pem
         
     - name: Create Release and Upload Asset
       uses: softprops/action-gh-release@v1
       with:
-        files: sp_cnki.zip
+        files: |
+          *.crx
+          extension.zip
         name: Release ${{ github.ref_name }}
         body: |
           Chrome Extension Release ${{ github.ref_name }}
           
-          This release contains the packaged Chrome extension ready for installation.
+          This release contains:
+          - sp_cnki.crx: Signed Chrome extension package
+          - extension.zip: Source files for manual installation
         draft: false
         prerelease: false

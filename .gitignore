@@ -2,6 +2,11 @@
 node_modules/
 dist/
 *.zip
+*.crx
+
+# 安全相关
+*.pem
+key.pem
 
 # 系统文件
 .DS_Store
